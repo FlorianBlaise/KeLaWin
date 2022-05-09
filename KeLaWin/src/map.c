@@ -36,6 +36,26 @@ int readAndCreateMap(Map* atlas, char* ficName) {
     return 0;
 }
 
+Map* copyMap(Map* atlas) {
+    int i;
+    int j;
+    Map* copiedAtlas = (Map*) malloc(sizeof(Map));
+
+    copiedAtlas->heigth = atlas->heigth;
+    copiedAtlas->width = atlas->width;
+    copiedAtlas->startingGas = copiedAtlas->startingGas;
+
+    copiedAtlas->map = (char **) malloc( atlas->heigth*sizeof(char *));
+
+    for(j=0; j<atlas->heigth; j++) {
+        copiedAtlas->map[j] = (char *) malloc( atlas->width*sizeof(char));
+        for (i=0; i<atlas->width; i++) {
+            copiedAtlas->map[j][i] = atlas->map[j][i];
+        }
+    }
+    return copiedAtlas;
+}
+
 /*###########################################################################################*/
 /*#################################### print ################################################*/
 /*###########################################################################################*/

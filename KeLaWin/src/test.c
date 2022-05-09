@@ -3,13 +3,26 @@
 
 int main(void) {
     Map atlas;
+    Map atlasCopied;
+    Path* way;
+    Path* startWay;
     Coord start;
     Coord end;
+    Coord act;
     int moove, wall, wallLeft, wallForward;
     int i, j;
+    double dist;
+    int cpt;
 
     readAndCreateMap(&atlas, "../tracks/starter_droit_au_but.txt");
     printMap(&atlas);
+    
+    printf("\n\n");
+    printf("...............copy map................");
+    printf("\n\n");
+
+    atlasCopied = *copyMap(&atlas);
+    printMap(&atlasCopied);
 
     printf("\n\n");
     printf("...............test start/end................");
@@ -75,6 +88,87 @@ int main(void) {
     printf("...............Apres verification, tous les tests sont passés pour les fonctions de map.c................");
     printf("\n\n");
 
-    
+    printf("\n\n");
+    printf("...............Test pour les fonctions de path.c................");
+    printf("\n\n");
+
+    printf("\n\n");
+    printf("...............affichage du path en coord................");
+    printf("\n\n");
+
+    way = (Path*) malloc(sizeof(Path));
+    act = start;
+    way = createNode(atlas.map[act.y][act.x], act);
+    act.x++;
+    act.y++;
+    startWay = way;
+    way->next = createNode(atlas.map[act.y][act.x], act);
+    way = way->next;
+    act.x++;
+    act.y++;
+    way->next = createNode(atlas.map[act.y][act.x], act);
+    way = way->next;
+    act.x++;
+    act.y++;
+    way->next = createNode(atlas.map[act.y][act.x], act);
+    way = way->next;
+    act.x++;
+    act.y++;
+    way->next = createNode(atlas.map[act.y][act.x], act);
+    way = way->next;
+    act.x++;
+    act.y++;
+    way->next = createNode(atlas.map[act.y][act.x], act);
+
+    printPath(startWay);
+
+    printf("\n\n");
+    printf("...............affichage du path en graphique................");
+    printf("\n\n");
+
+    displayPath(startWay, &atlas);
+
+    printf("\nla carte de base ne doit pas etre modifié :\n");
+    printMap(&atlas);
+
+    printf("\n\n");
+    printf("...............test distance euclidienne................");
+    printf("\n\n");
+
+    dist = distEucli(start.x, start.y, start.x+1, start.y);
+    printf("distance entre la cas %d/%d et la case %d/%d (expected 1) ? %f\n",start.x, start.y, start.x+1, start.y, dist);
+    dist = distEucli(start.x, start.y, start.x+1, start.y+1);
+    printf("distance entre la cas %d/%d et la case %d/%d (expected sqtr(2)) ? %f\n",start.x, start.y, start.x+1, start.y+1, dist);
+    dist = distEucli(start.x, start.y, start.x+5, start.y-1);
+    printf("distance entre la cas %d/%d et la case %d/%d (expected sqrt(26)) ? %f\n",start.x, start.y, start.x+5, start.y-1, dist);
+
+    printf("\n\n");
+    printf("...............test nb node................");
+    printf("\n\n");
+
+    cpt = nbNode(startWay);
+    printf("nombre de noeud du chemin (expected 5) ? %d\n", cpt);
+
+    printf("\n\n");
+    printf("...............test path length................");
+    printf("\n\n");
+
+    dist = pathLength(startWay);
+    printf("longueur du chemin de test (expected 4*sqrt(2)) (par pathLength) ? %f\n",dist);
+    dist = fitness(startWay);
+    printf("longueur du chemin de test (expected 4*sqrt(2)) (par fitness) ? %f\n",dist);
+
+/*
+    void folowDir(Map* atlas, int* x, int* y, enum DIRECTION dir);
+    enum DIRECTION validStartingDir(Map* atlas, int x, int y);
+    void generateFirstPath(Map* atlas, int startX, int startY, int endX, int endY, Path* path);
+
+    void mutate(Path* path, Map* atlas);
+    Path* generateNeighbor(Path* path, Map* atlas);
+    void simulatedAnnealing(Path* path, Map* atlas);
+
+    void LookForPath(Map* atlas, Path* path);
+*/
+
     return 0;
 }

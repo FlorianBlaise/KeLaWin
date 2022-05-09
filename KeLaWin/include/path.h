@@ -18,6 +18,9 @@ void printPath(Path* path);
 void fprintPath(Path* path, char* file_txt);
 void displayPath(Path* path, Map* atlas);
 
+Path* createNode(char content, Coord coord);
+int nbNode(Path* path);
+
 double distEucli(int x1, int y1, int x2, int y2);
 double pathLength(Path* path);
 double fitness(Path* path);

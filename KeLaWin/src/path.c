@@ -1,4 +1,5 @@
 #include "path.h"
+#include "map.h"
 
 /*###########################################################################################*/
 /*#################################### print ################################################*/
@@ -7,7 +8,7 @@
 int nbNode(Path* path) {
     int cpt = 0;
     while(path->next != NULL) {
-        cpt += 1;
+        cpt ++;
         path = path->next;
     }
     return cpt;
@@ -43,19 +44,23 @@ void fprintPath(Path* path, char* file_txt) {
 void displayPath(Path* path, Map* atlas) {
     int i;
     int n;
+    Map* atlasToPrint;
     char cpt = 'a';
 
     n= nbNode(path);
+
+    atlasToPrint = copyMap(atlas);
     
     for(i=0; i<n; i++){
-        atlas->map[path->coord.y][path->coord.x] = cpt;
+        atlasToPrint->map[path->coord.y][path->coord.x] = cpt;
         path = path->next;
         cpt++;
         if (cpt =='z'+1) {
             cpt = 'a';
         }
     }
-    printMap(atlas);
+    printMap(atlasToPrint);
+    free(atlasToPrint);
 }
 
 /*###########################################################################################*/
@@ -79,6 +84,17 @@ Path* copy(Path* initialPath) {
 }
 
 /*###########################################################################################*/
+/*################################### create ################################################*/
+/*###########################################################################################*/
+
+Path* createNode(char content, Coord coord) {
+    Path* next = (Path*) malloc(sizeof(Path));
+    next->content = content;
+    next->coord = coord;
+    return next;
+}
+
+/*###########################################################################################*/
 /*################################## distance ###############################################*/
 /*###########################################################################################*/
 
@@ -91,7 +107,7 @@ double pathLength(Path* path) {
     int n;
     double dist = 0;
     n = nbNode(path);
-    for(i=0; i< n; i++) {
+    for(i=0; i< n-1; i++) {
         dist += distEucli(path->coord.x, path->coord.y, path->next->coord.x, path->next->coord.y);
         path = path->next;
     }

@@ -19,6 +19,7 @@ typedef struct _Map {
 } Map;
 
 int readAndCreateMap(Map* atlas, char* ficName);
+Map* copyMap(Map* atlas);
 
 void printMap(Map* atlas);
 void fprintMap(Map* atlas, char* file_txt);

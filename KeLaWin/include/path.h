@@ -32,9 +32,13 @@ enum DIRECTION validStartingDir(Map* atlas, int x, int y);
 Path* generateFirstPath(Map* atlas, Coord start, Coord end);
 
 int isNodeInPath(Coord coord, Path* path);
+int isPopPossible(Path* path, int ri);
+int isMorphPossible(Path* path, int rx, int ry, int ri, Map* atlas);
+int isAddPossible(Path* path, int rx, int ry, int ri, Map* atlas);
+
 void pop(Path* path, int indice);
 void morph(Path* path, int rx, int ry, int indice, Map* atlas);
-void randomAdd(Path* path, int rx, int ry, Map* atlas);
+void add(Path* path, int rx, int ry, int index, Map* atlas);
 
 void mutate(Path* path, Map* atlas);
 Path* generateNeighbor(Path* path, Map* atlas);

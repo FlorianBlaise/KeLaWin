@@ -79,9 +79,11 @@ Path* copy(Path* initialPath) {
         copiedPath->content = initialPath->content;
         copiedPath->coord = initialPath->coord;
 
-        copiedPath->next = (Path *) malloc(sizeof(Path));
-        copiedPath = copiedPath->next;
-        initialPath = initialPath->next;
+        if (i!=n-1) { /*plus grand bout de scotch de la terre entiere*/
+            copiedPath->next = (Path *) malloc(sizeof(Path));
+            copiedPath = copiedPath->next;
+            initialPath = initialPath->next;
+        }
     }
 
 
@@ -202,67 +204,111 @@ int isNodeInPath(Coord coord, Path* path) {
 
 void pop(Path* path, int n) {
     int i;
-    if ( n != 0 && n!= nbNode(path)) {
-        for (i=0; i<n-1; i++) {
-            path = path->next;
-        }
-        path->next = path->next->next;
+    for (i=0; i<n-1; i++) {
+        path = path->next;
     }
+    path->next = path->next->next;
+}
+
+int isPopPossible(Path* path, int ri) {
+    int i;
+    for (i=0; i<ri; i++) {
+        path = path->next;
+    }
+    if ( isMooveValid(path->coord.x, path->coord.y, path->next->next->coord.x, path->next->next->coord.y) ) {
+        return 1;
+    }
+    return 0;
 }
 
 void morph(Path* path, int rx, int ry, int n, Map* atlas) {
     int i;
-    if ( n != 0 && n!= nbNode(path)) {
-        for (i=0; i<n; i++) {
-            path = path->next;
-        }   
-        path->coord.y += ry;
-        path->coord.x += rx;
-        path->content = atlas->map[path->coord.y][path->coord.x];
-    }
-
+    for (i=0; i<n; i++) {
+        path = path->next;
+    }   
+    path->coord.y += ry;
+    path->coord.x += rx;
+    path->content = atlas->map[path->coord.y][path->coord.x];
 }
 
-void randomAdd(Path* path, int rx, int ry, Map* atlas) {
-    Path* new_path;
-
-    new_path = (Path *) malloc(sizeof(Path));
-    new_path->coord = path->coord;
-
-    new_path->coord.y += ry;
-    new_path->coord.x += rx;
-    new_path->content = atlas->map[path->coord.y][path->coord.x];
-
-    if ( isMooveValid(path->coord.x, path->coord.y, new_path->coord.x, new_path->coord.y) && !isAWall(new_path->coord.x, new_path->coord.y, atlas) && !isNodeInPath(new_path->coord, path) ) {
-        path->next = new_path;
+int isMorphPossible(Path* path, int rx, int ry, int ri, Map* atlas) {
+    int i;
+    for (i=0; i<ri; i++) {
+        path = path->next;
     }
+    if ( !isAWall(path->coord.x+rx, path->coord.y+ry, atlas) && isMooveValid(path->coord.x, path->coord.y, path->coord.x+rx, path->coord.y+ry) ) {
+        return 1;
+    }
+    return 0;
 }
-/*
+
+void add(Path* path, int rx, int ry, int n, Map* atlas) {
+    int i;
+    Path* newPath;
+
+    newPath = (Path *) malloc(sizeof(Path));
+
+    for (i=0; i<n; i++) {
+        path = path->next;
+    }
+
+    newPath->coord = path->coord;
+    newPath->coord.x += rx;
+    newPath->coord.y += ry;
+
+    newPath->content = atlas->map[newPath->coord.y][newPath->coord.x];
+
+    newPath->next = path->next;
+    path->next = newPath;
+}
+
+int isAddPossible(Path* path, int rx, int ry, int ri, Map* atlas) {
+    int i;
+    for (i=0; i<ri; i++) {
+        path = path->next;
+    }
+    if ( !isAWall(path->coord.x+rx, path->coord.y+ry, atlas) && isMooveValid(path->coord.x, path->coord.y, path->coord.x+rx, path->coord.y+ry) ) {
+        return 1;
+    }
+    return 0;
+}
+
 void mutate(Path* path, Map* atlas) {
+    int i = 1;
     double r;
 
     int rx;
     int ry;
+
+    int ri;
+
+    int n;
 
     rx = (rand()%3)-1;
     ry = (rand()%3)-1;
 
     r = rand()/(RAND_MAX+1.0);
 
-    while( isAWall(path->coord.x+rx, path->coord.y+ry, atlas) ) {
-        rx = rand()%3-1;
-        ry = rand()%3-1;
-    }
+    n = nbNode(path);
 
-    if (r< 0.7) {
-        printf("1\n");
-        randomMorph(path, rx, ry, atlas);
-    } else if (r>0.7 && r<0.9) {
-        printf("2\n");
-        randomPop(path);
-    } else {
-        printf("3\n");
-        randomAdd(path, rx, ry, atlas);
+    ri = (rand()%n);
+
+    if (ri > 0) {
+        if (r< 0.7) {
+            if ( isMorphPossible(path, rx, ry, ri, atlas) )  {
+                morph(path, rx, ry, ri, atlas);
+            }
+        } else if (r>0.7 && r<0.9) {
+            if ( isPopPossible(path, ri) && ri < n-i) {
+                pop(path, ri);
+                i++;
+            }
+        } else {
+            if ( isAddPossible(path, rx, ry, ri, atlas)) {
+                add(path, rx, ry, ri, atlas);
+                i--;
+            }
+        }
     }
 }
 
@@ -272,20 +318,16 @@ Path* generateNeighbor(Path* path, Map* atlas) {
     double r;
     double mutatingProbabilitie = 1;
 
-    while (neighbor->next != NULL) {
+    while (neighbor != NULL) {
         r = rand()/(RAND_MAX+1.0);
         if (r < mutatingProbabilitie ) {
-            printPath(neighbor);
-            printf("\n ...mutation...\n");
             mutate(neighbor, atlas);
-            printPath(neighbor);
-            printf("\n\n");
         }
         neighbor = neighbor->next;
     }
     return start;
 }
-
+/*
 Path* chooseBestNeighbor(Path** neighbors, int size ) {
     int i;
 
@@ -317,8 +359,6 @@ void simulatedAnnealing(Path* path, Map* atlas) {
     temperature = 10;
     coolingFactor = 0.9;
     epsilon = 0.0001;
-
-    srand(time(NULL));
 
     while (temperature > epsilon) {
         for(i=0; i<10; i++) {

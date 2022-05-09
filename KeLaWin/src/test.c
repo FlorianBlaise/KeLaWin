@@ -5,14 +5,18 @@ int main(void) {
     Map atlas, atlasCopied;
     Path path;
     Path* way;
-    Path* copiedWay;
+    Path* copiedWay1;
+    Path* copiedWay2;
     Path* startWay;
-    Coord start, end, act, zero;
+    Path* neighbors[10];
+    Coord start, end, act, zero, random;
     enum DIRECTION dir;
     int moove, wall, wallLeft, wallForward, inPath;
     int i, j;
     double dist;
     int cpt;
+
+    srand(time(NULL));
 
     readAndCreateMap(&atlas, "../tracks/starter_droit_au_but.txt");
     printMap(&atlas);
@@ -108,7 +112,7 @@ int main(void) {
     act.y++;
     way->next = createNode(atlas.map[act.y][act.x], act);
     way = way->next;
-    copiedWay = copy(startWay);
+    copiedWay1 = copy(startWay);
     act.x++;
     act.y++;
     way->next = createNode(atlas.map[act.y][act.x], act);
@@ -120,9 +124,11 @@ int main(void) {
     act.x++;
     act.y++;
     way->next = createNode(atlas.map[act.y][act.x], act);
+    copiedWay2 = copy(startWay);
 
     printPath(startWay);
-    printPath(copiedWay);
+    printPath(copiedWay1);
+    printPath(copiedWay2);
 
     printf("\n\n");
     printf("...............affichage du path en graphique................");
@@ -250,11 +256,51 @@ int main(void) {
     printPath(&path);
     morph(&path, 1, -1, 5, &atlas);
     printPath(&path);
-    /*
-    void randomAdd(Path* path, int rx, int ry, Map* atlas);
 
-    void mutate(Path* path, Map* atlas);
-    Path* generateNeighbor(Path* path, Map* atlas);
+    printf("\n\n");
+    printf("...............test savoir si add possible................");
+    printf("\n\n");
+
+    printPath(&path);
+    random.x = 0;
+    random.y = 0;
+    add(&path, random.x, random.y, 2, &atlas);
+    printPath(&path);
+    random.x = 1;
+    random.y = 1;
+    add(&path, random.x, random.y, 2, &atlas);
+    printPath(&path);
+    random.x = 2;
+    random.y = 2;
+    add(&path, random.x, random.y, 2, &atlas);    
+    printPath(&path);
+
+    printf("\n\n");
+    printf("...............test mutate................");
+    printf("\n\n");
+
+    path = *generateFirstPath(&atlas, start, end);
+    printf("chemin sans mutation : \n");
+    printPath(&path);
+    printf("chemin apres 10 mutations aléatoires : \n");
+    for(i=0; i<10; i++) {
+        mutate(&path, &atlas);
+    }
+    printf("\n");
+    printPath(&path);
+
+    printf("\n\n");
+    printf("...............test generation de voisin................");
+    printf("\n\n");
+
+    printf("chemin de départ : \n");
+    printPath(&path);
+    for(i=0; i<10; i++) {
+        neighbors[i] = generateNeighbor(&path, &atlas);
+        printf("voisin n°%d :\n",i);
+        printPath(neighbors[i]);
+    }
+/*
     void simulatedAnnealing(Path* path, Map* atlas);
 
     void LookForPath(Map* atlas, Path* path);

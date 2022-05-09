@@ -121,7 +121,7 @@ int isAWall(int x, int y, Map* atlas) {
 }
 
 int isThereWallLeft(Map* atlas, int x, int y, enum DIRECTION dir) {
-    if (dir == S) {
+    if (dir == N) {
         if (x <= 0 || atlas->map[y][x-1] != '.') {
             return 0;
         }
@@ -131,7 +131,7 @@ int isThereWallLeft(Map* atlas, int x, int y, enum DIRECTION dir) {
             return 0;
         }
         return 1;
-    } else if (dir == N) {
+    } else if (dir == S) {
         if (x >= atlas->width || atlas->map[y][x+1] != '.') {
             return 0;
         }
@@ -146,7 +146,7 @@ int isThereWallLeft(Map* atlas, int x, int y, enum DIRECTION dir) {
 }
 
 int isThereWallForward(Map* atlas, int x, int y, enum DIRECTION dir) {
-    if (dir == S) {
+    if (dir == N) {
         if (y <= 0 || atlas->map[y-1][x] == '#') {
             return 0;
         }
@@ -156,7 +156,7 @@ int isThereWallForward(Map* atlas, int x, int y, enum DIRECTION dir) {
             return 0;
         }
         return 1;
-    } else if (dir == N) {
+    } else if (dir == S) {
         if (y >= atlas->heigth || atlas->map[y+1][x] != '.') {
             return 0;
         }

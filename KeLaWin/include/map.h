@@ -9,7 +9,7 @@
 
 #define MAX_LINE_LENGTH 512
 
-enum DIRECTION {S, E, N, W};
+enum DIRECTION {N, E, S, W};
 
 typedef struct _Map {
     int heigth;

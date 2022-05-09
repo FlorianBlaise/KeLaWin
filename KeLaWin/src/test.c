@@ -2,14 +2,14 @@
 #include "path.h"
 
 int main(void) {
-    Map atlas;
-    Map atlasCopied;
+    Map atlas, atlasCopied;
+    Path path;
     Path* way;
+    Path* copiedWay;
     Path* startWay;
-    Coord start;
-    Coord end;
-    Coord act;
-    int moove, wall, wallLeft, wallForward;
+    Coord start, end, act, zero;
+    enum DIRECTION dir;
+    int moove, wall, wallLeft, wallForward, inPath;
     int i, j;
     double dist;
     int cpt;
@@ -108,6 +108,7 @@ int main(void) {
     act.y++;
     way->next = createNode(atlas.map[act.y][act.x], act);
     way = way->next;
+    copiedWay = copy(startWay);
     act.x++;
     act.y++;
     way->next = createNode(atlas.map[act.y][act.x], act);
@@ -121,6 +122,7 @@ int main(void) {
     way->next = createNode(atlas.map[act.y][act.x], act);
 
     printPath(startWay);
+    printPath(copiedWay);
 
     printf("\n\n");
     printf("...............affichage du path en graphique................");
@@ -147,21 +149,109 @@ int main(void) {
     printf("\n\n");
 
     cpt = nbNode(startWay);
-    printf("nombre de noeud du chemin (expected 5) ? %d\n", cpt);
+    printf("nombre de noeud du chemin (expected 6) ? %d\n", cpt);
 
     printf("\n\n");
     printf("...............test path length................");
     printf("\n\n");
 
     dist = pathLength(startWay);
-    printf("longueur du chemin de test (expected 4*sqrt(2)) (par pathLength) ? %f\n",dist);
+    printf("longueur du chemin de test (expected 5*sqrt(2)) (par pathLength) ? %f\n",dist);
     dist = fitness(startWay);
-    printf("longueur du chemin de test (expected 4*sqrt(2)) (par fitness) ? %f\n",dist);
+    printf("longueur du chemin de test (expected 5*sqrt(2)) (par fitness) ? %f\n",dist);
 
-/*
-    void folowDir(Map* atlas, int* x, int* y, enum DIRECTION dir);
-    enum DIRECTION validStartingDir(Map* atlas, int x, int y);
-    void generateFirstPath(Map* atlas, int startX, int startY, int endX, int endY, Path* path);
+    printf("\n\n");
+    printf("...............test followDir................");
+    printf("\n\n");
+
+    act = start;
+    printf("coord au départ : %d/%d\n", start.x, start.y);
+    folowDir(&atlas, &act.x, &act.y, N);
+    printf("coord apres followdir N (expected 3/4) ? %d/%d \n",act.x, act.y);
+    act = start;
+    folowDir(&atlas, &act.x, &act.y, E);
+    printf("coord apres followdir E (expected 4/5) ? %d/%d \n",act.x, act.y);
+    act = start;
+    folowDir(&atlas, &act.x, &act.y, S);
+    printf("coord apres followdir S (expected 3/6) ? %d/%d \n",act.x, act.y);
+    act = start;
+    folowDir(&atlas, &act.x, &act.y, W);
+    printf("coord apres followdir W (expected 2/5) ? %d/%d \n",act.x, act.y);
+
+    printf("\n\n");
+    printf("...............test validStartingdir................");
+    printf("\n\n");
+
+    dir = validStartingDir(&atlas, start.x, start.y);
+    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d (expected 0) ? %d\n", start.x, start.y, dir);
+    dir = validStartingDir(&atlas, start.x-1, start.y-1);
+    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d (expected 1) ? %d\n", start.x-1, start.y-1, dir);
+    dir = validStartingDir(&atlas, 28, 4);
+    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d (expected 2) ? %d\n", 28, 4, dir);
+
+    printf("\n\n");
+    printf("...............test suivons le mur................");
+    printf("\n\n");
+
+    path = *generateFirstPath(&atlas, start, end);
+    displayPath(&path, &atlas);
+    printf("la carte ne doit pas etre modifié :\n");
+    printMap(&atlas);
+
+    printf("\n\n");
+    printf("...............On arrive à suivre le mur youpi................");
+    printf("\n\n");
+
+    printf("\n\n");
+    printf("...............test recuit simulé................");
+    printf("\n\n");
+
+    printf("\n\n");
+    printf("...............test savoir si un noeaud est dans un chemin................");
+    printf("\n\n");
+
+
+    zero.x = 0;
+    zero.y = 0;
+
+    act = start;
+    act.x++;
+    act.y--;
+
+    inPath = isNodeInPath(start, &path);
+    printf("est ce que la case %d/%d est dans le chemin (start) ? %d\n",start.x, start.y, inPath);
+    inPath = isNodeInPath(end, &path);
+    printf("est ce que la case %d/%d est dans le chemin (end) ? %d\n",end.x, end.y, inPath);
+    inPath = isNodeInPath(zero, &path);
+    printf("est ce que la case %d/%d est dans le chemin (zero) ? %d\n",zero.x, zero.y, inPath);
+    inPath = isNodeInPath(act, &path);
+    printf("est ce que la case %d/%d est dans le chemin (start+1) ? %d\n",act.x, act.y, inPath);
+
+    printf("\n\n");
+    printf("...............test savoir si pop est possible................");
+    printf("\n\n");
+
+    printPath(&path);
+    pop(&path, 0);
+    printPath(&path);
+    pop(&path, 1);
+    printPath(&path);
+    pop(&path, 5);
+    printPath(&path);
+
+    printf("\n\n");
+    printf("...............test savoir si morphe possible................");
+    printf("\n\n");
+
+    printPath(&path);
+    morph(&path, 1, 1, 0, &atlas);
+    printPath(&path);
+    morph(&path, 1, 1, 2, &atlas);
+    printPath(&path);
+    morph(&path, 1, -1, 5, &atlas);
+    printPath(&path);
+    /*
+    void randomAdd(Path* path, int rx, int ry, Map* atlas);
 
     void mutate(Path* path, Map* atlas);
     Path* generateNeighbor(Path* path, Map* atlas);

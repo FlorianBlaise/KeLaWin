@@ -7,7 +7,7 @@
 
 int nbNode(Path* path) {
     int cpt = 0;
-    while(path->next != NULL) {
+    while(path != NULL) {
         cpt ++;
         path = path->next;
     }
@@ -68,17 +68,22 @@ void displayPath(Path* path, Map* atlas) {
 /*###########################################################################################*/
 
 Path* copy(Path* initialPath) {
+    int i;
+    int n;
     Path* copiedPath = (Path *) malloc(sizeof(Path));
     Path* start = copiedPath;
 
-    do {
+    n = nbNode(initialPath); 
+
+    for (i=0; i<n;i++) {
         copiedPath->content = initialPath->content;
         copiedPath->coord = initialPath->coord;
 
         copiedPath->next = (Path *) malloc(sizeof(Path));
         copiedPath = copiedPath->next;
         initialPath = initialPath->next;
-    } while (initialPath->next != NULL);
+    }
+
 
     return start;
 }
@@ -124,11 +129,11 @@ double fitness(Path* path) {
 
 void folowDir(Map* atlas, int* x, int* y, enum DIRECTION dir) {
     if (atlas->map[*y][*x] != '.') {
-        if (dir == S) {
+        if (dir == N) {
             (*y) = (*y)-1;
         } else if (dir == E) {
             (*x) = (*x)+1;
-        } else if (dir == N) {
+        } else if (dir == S) {
             (*y) = (*y)+1;
         } else if (dir == W) {
             (*x) = (*x)-1;
@@ -138,67 +143,56 @@ void folowDir(Map* atlas, int* x, int* y, enum DIRECTION dir) {
 
 enum DIRECTION validStartingDir(Map* atlas, int x, int y) {
     if ( atlas->map[y-1][x] != '.') {
-        return S;
+        return N;
     } else if ( atlas->map[y][x+1] != '.') {
         return E;
     } else if ( atlas->map[y+1][x] != '.') {
-        return N;
+        return S;
     }
     return W;
 }
 
-void generateFirstPath(Map* atlas, int startX, int startY, int endX, int endY, Path* path) {
-    int x = startX;
-    int y = startY;
+Path* generateFirstPath(Map* atlas, Coord start, Coord end) {
+    Coord cur = start;
     int sumAngl = 0;
     enum DIRECTION dir;
+    Path* path;
+    Path* startPath;
 
-    dir = validStartingDir(atlas, x, y);
-    
+    dir = validStartingDir(atlas, cur.x, cur.y);
+
+    path = createNode(atlas->map[cur.y][cur.x], cur);
     path->next = (Path *) malloc(sizeof(Path));
+    startPath = path;
 
-    path->content = atlas->map[y][x];
-    path->coord.x = x;
-    path->coord.y = y;
-
-    while( x != endX || y != endY) {
+    while( cur.x != end.x || cur.y != end.y) {
         
-        folowDir(atlas, &x, &y, dir);
+        folowDir(atlas, &cur.x, &cur.y, dir);
 
-        path->next->content = atlas->map[y][x];
-        path->next->coord.x = x;
-        path->next->coord.y = y;
-        path->next->next = (Path *)malloc(sizeof(Path));
+        path->next = createNode(atlas->map[cur.y][cur.x], cur);
 
-        if (atlas->map[y][x] == '#') {
-            atlas->map[y][x] = '$';
-        } else {
-            atlas->map[y][x] = '&';
-        }
-        /*fprintMap(atlas, "err.txt");*/
-
-        if (isThereWallForward(atlas, x, y, dir) == 1) {
+        if (isThereWallForward(atlas, cur.x, cur.y, dir) == 1) {
             dir = (dir+1)%4;
             sumAngl++;
             continue;
         }
-        if (isThereWallLeft(atlas, x, y, dir) == 0) {
+        if (isThereWallLeft(atlas, cur.x, cur.y, dir) == 0) {
             if (sumAngl != 0) {
                 dir = (dir-1)%4;
                 sumAngl--;
             }
         }
-
         path = path->next;
     }
+    return startPath;
 }
 
 /*###########################################################################################*/
 /*################################ Recuit Simulé ############################################*/
 /*###########################################################################################*/
-int isNodeInPath(int x, int y, Path* path) {
-    while (path->next != NULL) {
-        if ( path->coord.x == x && path->coord.y == y ) {
+int isNodeInPath(Coord coord, Path* path) {
+    while (path != NULL) {
+        if ( path->coord.x == coord.x && path->coord.y == coord.y ) {
             return 1;
         }
         path = path->next;
@@ -206,14 +200,22 @@ int isNodeInPath(int x, int y, Path* path) {
     return 0;
 }
 
-void randomPop(Path* path) {
-    if ( isMooveValid(path->coord.x, path->coord.y, path->next->next->coord.x, path->next->next->coord.y) ) {
+void pop(Path* path, int n) {
+    int i;
+    if ( n != 0 && n!= nbNode(path)) {
+        for (i=0; i<n-1; i++) {
+            path = path->next;
+        }
         path->next = path->next->next;
     }
 }
 
-void randomMorph(Path* path, int rx, int ry, Map* atlas) {
-    if ( isMooveValid(path->coord.x, path->coord.y, path->next->coord.x+rx, path->next->coord.y+ry) && !isAWall(path->coord.x+rx, path->coord.y+ry, atlas) && !isNodeInPath(path->coord.x+rx, path->coord.y+ry, path)) {
+void morph(Path* path, int rx, int ry, int n, Map* atlas) {
+    int i;
+    if ( n != 0 && n!= nbNode(path)) {
+        for (i=0; i<n; i++) {
+            path = path->next;
+        }   
         path->coord.y += ry;
         path->coord.x += rx;
         path->content = atlas->map[path->coord.y][path->coord.x];
@@ -231,11 +233,11 @@ void randomAdd(Path* path, int rx, int ry, Map* atlas) {
     new_path->coord.x += rx;
     new_path->content = atlas->map[path->coord.y][path->coord.x];
 
-    if ( isMooveValid(path->coord.x, path->coord.y, new_path->coord.x, new_path->coord.y) && !isAWall(new_path->coord.x, new_path->coord.y, atlas) && !isNodeInPath(new_path->coord.x, new_path->coord.y, path) ) {
+    if ( isMooveValid(path->coord.x, path->coord.y, new_path->coord.x, new_path->coord.y) && !isAWall(new_path->coord.x, new_path->coord.y, atlas) && !isNodeInPath(new_path->coord, path) ) {
         path->next = new_path;
     }
 }
-
+/*
 void mutate(Path* path, Map* atlas) {
     double r;
 
@@ -298,7 +300,7 @@ Path* chooseBestNeighbor(Path** neighbors, int size ) {
     return bestPath;
 }
 
-
+/*
 void simulatedAnnealing(Path* path, Map* atlas) {
     int i;
     double r;
@@ -355,7 +357,7 @@ void simulatedAnnealing(Path* path, Map* atlas) {
 /*###########################################################################################*/
 /*############################ Cherchons notre chemin #######################################*/
 /*###########################################################################################*/
-
+/*
 void LookForPath(Map* atlas, Path* path) {
     int j, i;
     int startX = 0;
@@ -404,3 +406,4 @@ void LookForPath(Map* atlas, Path* path) {
     displayPath(path, &cleanAtlas);
     printf("path length (recuit): %f\n", pathLength(path));
 }
+*/

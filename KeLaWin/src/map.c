@@ -114,16 +114,20 @@ void findStartingPoint(Map* atlas, int* i, int* j) {
     }
 }
 
-void findEndPoint(Map* atlas, int* i, int* j) {
-    int k;
-    int l;
+void findEndPoint(Map* atlas, int* i, int* j) { /*s'arrete des qu'il trouve une arrivée!*/
+    int y;
+    int x;
 
-    for (k=0; k<atlas->heigth; k++) {
-        for (l=0; l<atlas->width; l++) {
-            if (atlas->map[k][l]=='=') {
-                *i = l;
-                *j = k;
+    for (y=0; y<atlas->heigth; y++) {
+        for (x=0; x<atlas->width; x++) {
+            if (atlas->map[y][x]=='=') {
+                *i = x;
+                *j = y;
+                break;
             }
+        }
+        if ( *i == x && *j == y) {
+            break;
         }
     }
 }

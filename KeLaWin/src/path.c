@@ -233,12 +233,16 @@ void morph(Path* path, int rx, int ry, int n, Map* atlas) {
 
 int isMorphPossible(Path* path, int rx, int ry, int ri, Map* atlas) {
     int i;
-    for (i=0; i<ri; i++) {
+    for (i=0; i<ri-1; i++) {
         path = path->next;
     }
-    if ( !isAWall(path->coord.x+rx, path->coord.y+ry, atlas) && isMooveValid(path->coord.x, path->coord.y, path->coord.x+rx, path->coord.y+ry) ) {
-        return 1;
+    if (isMooveValid(path->coord.x+rx, path->coord.y+ry, path->next->coord.x, path->next->coord.y)) {
+        path = path->next;
+        if ( !isAWall(path->coord.x+rx, path->coord.y+ry, atlas) && isMooveValid(path->coord.x+rx, path->coord.y+ry, path->next->coord.x, path->next->coord.y) ) {
+            return 1;
+        }
     }
+    
     return 0;
 }
 
@@ -264,12 +268,16 @@ void add(Path* path, int rx, int ry, int n, Map* atlas) {
 
 int isAddPossible(Path* path, int rx, int ry, int ri, Map* atlas) {
     int i;
-    for (i=0; i<ri; i++) {
+    for (i=0; i<ri-1; i++) {
         path = path->next;
     }
-    if ( !isAWall(path->coord.x+rx, path->coord.y+ry, atlas) && isMooveValid(path->coord.x, path->coord.y, path->coord.x+rx, path->coord.y+ry) ) {
-        return 1;
+    if (isMooveValid(path->coord.x+rx, path->coord.y+ry, path->next->coord.x, path->next->coord.y)) {
+        path = path->next;
+        if ( !isAWall(path->coord.x+rx, path->coord.y+ry, atlas) && isMooveValid(path->coord.x+rx, path->coord.y+ry, path->next->coord.x, path->next->coord.y) ) {
+            return 1;
+        }
     }
+    
     return 0;
 }
 
@@ -293,20 +301,29 @@ void mutate(Path* path, Map* atlas) {
 
     ri = (rand()%n);
 
-    if (ri > 0) {
+    if (ri > 0 && ri < n) {
         if (r< 0.7) {
-            if ( isMorphPossible(path, rx, ry, ri, atlas) )  {
+            if ( ri < n-i && isMorphPossible(path, rx, ry, ri, atlas) )  {
                 morph(path, rx, ry, ri, atlas);
+                printf("morph/");
+            } else {
+                printf("morph impossible/");
             }
         } else if (r>0.7 && r<0.9) {
-            if ( isPopPossible(path, ri) && ri < n-i) {
+            i++;
+            if ( ri < n-i && isPopPossible(path, ri) ) {
                 pop(path, ri);
-                i++;
+                printf("pop/");
+            } else {
+                printf("pop impossible/");
             }
         } else {
-            if ( isAddPossible(path, rx, ry, ri, atlas)) {
-                add(path, rx, ry, ri, atlas);
+            if ( ri < n-i && isAddPossible(path, rx, ry, ri, atlas)) {
                 i--;
+                add(path, rx, ry, ri, atlas);
+                printf("add/");
+            } else {
+                printf("add impossible/");
             }
         }
     }
@@ -321,7 +338,9 @@ Path* generateNeighbor(Path* path, Map* atlas) {
     while (neighbor != NULL) {
         r = rand()/(RAND_MAX+1.0);
         if (r < mutatingProbabilitie ) {
-            mutate(neighbor, atlas);
+            if (neighbor->content != '=') { /*pour ne pas modifier l'arrivé*/
+                mutate(neighbor, atlas);
+            }
         }
         neighbor = neighbor->next;
     }

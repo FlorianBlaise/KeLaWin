@@ -40,11 +40,13 @@ void pop(Path* path, int indice);
 void morph(Path* path, int rx, int ry, int indice, Map* atlas);
 void add(Path* path, int rx, int ry, int index, Map* atlas);
 
+void correctPath(Path* path);
+
 void mutate(Path* path, Map* atlas);
 Path* generateNeighbor(Path* path, Map* atlas);
 Path* chooseBestNeighbor(Path** neighbors, int size);
 
-void simulatedAnnealing(Path* path, Map* atlas);
+Path* simulatedAnnealing(Path* path, Map* atlas);
 
 void LookForPath(Map* atlas, Path* path);
 

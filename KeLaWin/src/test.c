@@ -9,6 +9,7 @@ int main(void) {
     Path* copiedWay2;
     Path* startWay;
     Path* neighbors[10];
+    Path* bestNeighbor;
     Coord start, end, act, zero, random;
     enum DIRECTION dir;
     int moove, wall, wallLeft, wallForward, inPath;
@@ -293,18 +294,32 @@ int main(void) {
     printf("...............test generation de voisin................");
     printf("\n\n");
 
+    path = *generateFirstPath(&atlas, start, end);
     printf("chemin de départ : \n");
     printPath(&path);
+    displayPath(&path, &atlas);
     for(i=0; i<10; i++) {
         neighbors[i] = generateNeighbor(&path, &atlas);
         printf("voisin n°%d :\n",i);
         printPath(neighbors[i]);
+        displayPath(neighbors[i], &atlas);
     }
-/*
-    void simulatedAnnealing(Path* path, Map* atlas);
 
-    void LookForPath(Map* atlas, Path* path);
-*/
+    printf("\n\n");
+    printf("...............test choose best neighbor................");
+    printf("\n\n");
 
+    bestNeighbor = chooseBestNeighbor(neighbors, 10);
+    printf("fitness bestNeighbor = %f\n", fitness(bestNeighbor));
+    for(i=0; i<10; i++) {
+        printf("fitness voisin n°%d = %f\n", i, fitness(neighbors[i]));
+    }
+
+    printf("\n\n");
+    printf("...............test simulated annealing................");
+    printf("\n\n");
+
+    path = *generateFirstPath(&atlas, start, end);
+    path = *simulatedAnnealing(&path, &atlas);
     return 0;
 }

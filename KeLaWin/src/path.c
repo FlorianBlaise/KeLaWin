@@ -122,7 +122,10 @@ double pathLength(Path* path) {
 }
 
 double fitness(Path* path) {
-    return pathLength(path);
+    double n = (double) nbNode(path);
+    double dist = pathLength(path);
+    printf("n=%f, dist=%f, sum = %f\n ", n, dist, n+dist);
+    return dist + n;
 }
 
 /*###########################################################################################*/
@@ -303,11 +306,12 @@ void mutate(Path* path, Map* atlas) {
 
     if (ri > 0 && ri < n) {
         if (r< 0.7) {
+            i ++;
             if ( ri < n-i && isMorphPossible(path, rx, ry, ri, atlas) )  {
                 morph(path, rx, ry, ri, atlas);
                 printf("morph/");
             } else {
-                printf("morph impossible/");
+                i--;
             }
         } else if (r>0.7 && r<0.9) {
             i++;
@@ -315,16 +319,14 @@ void mutate(Path* path, Map* atlas) {
                 pop(path, ri);
                 printf("pop/");
             } else {
-                printf("pop impossible/");
+                i--;
             }
         } else {
             if ( ri < n-i && isAddPossible(path, rx, ry, ri, atlas)) {
                 i--;
                 add(path, rx, ry, ri, atlas);
                 printf("add/");
-            } else {
-                printf("add impossible/");
-            }
+            } 
         }
     }
 }
@@ -344,9 +346,24 @@ Path* generateNeighbor(Path* path, Map* atlas) {
         }
         neighbor = neighbor->next;
     }
+    correctPath(start);
     return start;
 }
-/*
+
+void correctPath(Path* path) {
+    int i;
+    int n = nbNode(path);
+
+    for(i=0; i<n; i++) {
+        if (path != NULL) {
+            if (isNodeInPath(path->coord, path->next)) {
+                pop(path, 0);
+            }
+        path = path->next;
+        }
+    }
+}
+
 Path* chooseBestNeighbor(Path** neighbors, int size ) {
     int i;
 
@@ -361,8 +378,8 @@ Path* chooseBestNeighbor(Path** neighbors, int size ) {
     return bestPath;
 }
 
-/*
-void simulatedAnnealing(Path* path, Map* atlas) {
+
+Path* simulatedAnnealing(Path* path, Map* atlas) {
     int i;
     double r;
 
@@ -379,18 +396,23 @@ void simulatedAnnealing(Path* path, Map* atlas) {
     coolingFactor = 0.9;
     epsilon = 0.0001;
 
+    printf("longueur du chemin de base : %f\n", fitness(path));
+    displayPath(path, atlas);
+
     while (temperature > epsilon) {
         for(i=0; i<10; i++) {
             neighbors[i] = generateNeighbor(bestPath, atlas);
+            displayPath(neighbors[i],atlas);
         }
         bestNeighbor = chooseBestNeighbor(neighbors, 10);
+        displayPath(bestNeighbor, atlas);
 
-        if (fitness(bestNeighbor) < fitness(bestPath)) {
+        if (fitness(bestNeighbor) <= fitness(bestPath)) {
             bestPath = bestNeighbor;
-            printf("meilleur\n");
+            printf("\nmeilleur\n");
         } else {
             r = rand()/(RAND_MAX+1.0);
-            printf("r=%f, fit1=%f/fit2=%f/temp=%f\n", r, fitness(bestPath) ,fitness(bestNeighbor), temperature);
+            printf("\nr=%f, form=%f\n", r, exp( -(fitness(bestNeighbor) - fitness(bestPath))/temperature ));
             if (r < exp( -(fitness(bestNeighbor) - fitness(bestPath))/temperature )) {
                 bestPath = bestNeighbor;
                 printf("moins bon\n");
@@ -410,19 +432,21 @@ void simulatedAnnealing(Path* path, Map* atlas) {
         }
         
     }
-    path = bestPath;
+    return bestPath;
 }
 
 /*###########################################################################################*/
 /*############################ Cherchons notre chemin #######################################*/
 /*###########################################################################################*/
-/*
+
 void LookForPath(Map* atlas, Path* path) {
     int j, i;
     int startX = 0;
     int startY = 0;
     int endX = 0;
     int endY = 0;
+    Coord start;
+    Coord end;
 
     Map cleanAtlas;
     Map cleanAtlas1;
@@ -454,7 +478,12 @@ void LookForPath(Map* atlas, Path* path) {
     findStartingPoint(atlas, &startX, &startY);
     findEndPoint(atlas, &endX, &endY);
 
-    generateFirstPath(atlas, startX, startY, endX, endY, path);
+    start.x = startX;
+    start.y = startY;
+    end.x = endX;
+    end.y = endY;
+
+    path = generateFirstPath(atlas, start, end);
 
     printf("\n");
     displayPath(path, &cleanAtlas1);
@@ -465,4 +494,3 @@ void LookForPath(Map* atlas, Path* path) {
     displayPath(path, &cleanAtlas);
     printf("path length (recuit): %f\n", pathLength(path));
 }
-*/

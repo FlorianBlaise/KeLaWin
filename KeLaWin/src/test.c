@@ -19,7 +19,7 @@ int main(void) {
 
     srand(time(NULL));
 
-    readAndCreateMap(&atlas, "../tracks/starter_droit_au_but.txt");
+    readAndCreateMap(&atlas, "../tracks/starter_serpent.txt");
     printMap(&atlas);
     
     printf("\n\n");

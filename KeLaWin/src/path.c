@@ -63,6 +63,28 @@ void displayPath(Path* path, Map* atlas) {
     free(atlasToPrint);
 }
 
+void fdisplayPath(Path* path, Map* atlas) {
+    int i;
+    int n;
+    Map* atlasToPrint;
+    char cpt = 'a';
+
+    n= nbNode(path);
+
+    atlasToPrint = copyMap(atlas);
+    
+    for(i=0; i<n; i++){
+        atlasToPrint->map[path->coord.y][path->coord.x] = cpt;
+        path = path->next;
+        cpt++;
+        if (cpt =='z'+1) {
+            cpt = 'a';
+        }
+    }
+    fprintMap(atlasToPrint, "err.txt");
+    free(atlasToPrint);
+}
+
 /*###########################################################################################*/
 /*#################################### copy #################################################*/
 /*###########################################################################################*/
@@ -124,7 +146,6 @@ double pathLength(Path* path) {
 double fitness(Path* path) {
     double n = (double) nbNode(path);
     double dist = pathLength(path);
-    printf("n=%f, dist=%f, sum = %f\n ", n, dist, n+dist);
     return dist + n;
 }
 
@@ -147,11 +168,11 @@ void folowDir(Map* atlas, int* x, int* y, enum DIRECTION dir) {
 }
 
 enum DIRECTION validStartingDir(Map* atlas, int x, int y) {
-    if ( atlas->map[y-1][x] != '.') {
+    if ( y!=0 && atlas->map[y-1][x] != '.') {
         return N;
-    } else if ( atlas->map[y][x+1] != '.') {
+    } else if ( x != atlas->width && atlas->map[y][x+1] != '.') {
         return E;
-    } else if ( atlas->map[y+1][x] != '.') {
+    } else if ( y != atlas->heigth && atlas->map[y+1][x] != '.') {
         return S;
     }
     return W;
@@ -309,7 +330,6 @@ void mutate(Path* path, Map* atlas) {
             i ++;
             if ( ri < n-i && isMorphPossible(path, rx, ry, ri, atlas) )  {
                 morph(path, rx, ry, ri, atlas);
-                printf("morph/");
             } else {
                 i--;
             }
@@ -317,7 +337,6 @@ void mutate(Path* path, Map* atlas) {
             i++;
             if ( ri < n-i && isPopPossible(path, ri) ) {
                 pop(path, ri);
-                printf("pop/");
             } else {
                 i--;
             }
@@ -325,7 +344,6 @@ void mutate(Path* path, Map* atlas) {
             if ( ri < n-i && isAddPossible(path, rx, ry, ri, atlas)) {
                 i--;
                 add(path, rx, ry, ri, atlas);
-                printf("add/");
             } 
         }
     }
@@ -335,7 +353,7 @@ Path* generateNeighbor(Path* path, Map* atlas) {
     Path* neighbor = copy(path);
     Path* start = neighbor;
     double r;
-    double mutatingProbabilitie = 1;
+    double mutatingProbabilitie = 0.3;
 
     while (neighbor != NULL) {
         r = rand()/(RAND_MAX+1.0);
@@ -397,41 +415,28 @@ Path* simulatedAnnealing(Path* path, Map* atlas) {
     epsilon = 0.0001;
 
     printf("longueur du chemin de base : %f\n", fitness(path));
-    displayPath(path, atlas);
+    fdisplayPath(path, atlas);
 
     while (temperature > epsilon) {
         for(i=0; i<10; i++) {
             neighbors[i] = generateNeighbor(bestPath, atlas);
-            displayPath(neighbors[i],atlas);
         }
         bestNeighbor = chooseBestNeighbor(neighbors, 10);
-        displayPath(bestNeighbor, atlas);
 
         if (fitness(bestNeighbor) <= fitness(bestPath)) {
             bestPath = bestNeighbor;
-            printf("\nmeilleur\n");
         } else {
             r = rand()/(RAND_MAX+1.0);
-            printf("\nr=%f, form=%f\n", r, exp( -(fitness(bestNeighbor) - fitness(bestPath))/temperature ));
             if (r < exp( -(fitness(bestNeighbor) - fitness(bestPath))/temperature )) {
                 bestPath = bestNeighbor;
-                printf("moins bon\n");
             }
         }
 
         temperature *= coolingFactor;
-        printf("nb node : %d\n",nbNode(path));
-        printf("path length bestPath: %f\n\n", pathLength(bestPath));
-
-        fprintPath(bestPath, "err.txt");
-
-        for(i=0; i<10; i++) {
-            if ( neighbors[i] != bestNeighbor ) {
-                free(neighbors[i]);
-            }
-        }
-        
+   
     }
+    fdisplayPath(bestPath, atlas);
+    printf("path length bestPath: %f\n\n", fitness(bestPath));
     return bestPath;
 }
 

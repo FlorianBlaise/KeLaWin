@@ -2,32 +2,36 @@
 #include "path.h"
 
 int main(void) {
-    Map atlas, atlasCopied;
+    Map atlas; /*atlasCopied;*/
     Path path;
+    /*
     Path* way;
     Path* copiedWay1;
     Path* copiedWay2;
     Path* startWay;
     Path* neighbors[10];
-    Path* bestNeighbor;
-    Coord start, end, act, zero, random;
+    Path* bestNeighbor; */
+    Coord start, end; /*act, zero, random;
     enum DIRECTION dir;
     int moove, wall, wallLeft, wallForward, inPath;
     int i, j;
     double dist;
-    int cpt;
+    int cpt; */
+    int gas;
+    
 
     srand(time(NULL));
 
     readAndCreateMap(&atlas, "../tracks/starter_serpent.txt");
     printMap(&atlas);
-    
+    /*
     printf("\n\n");
     printf("...............copy map................");
     printf("\n\n");
 
     atlasCopied = *copyMap(&atlas);
     printMap(&atlasCopied);
+    */
 
     printf("\n\n");
     printf("...............test start/end................");
@@ -36,20 +40,9 @@ int main(void) {
     findStartingPoint(&atlas, &start.x, &start.y);
     findEndPoint(&atlas, &end.x, &end.y);
 
-    printf("starting point : %d/%d (expected 3/5)\n", start.x, start.y);
-    printf("end point : %d/%d (expected 28/10)\n", end.x, end.y);
-
-    printf("\n\n");
-    printf("...............test moove................");
-    printf("\n\n");
-
-    for (i=0; i<3; i++) {
-        for (j=0; j<3; j++) {
-            moove = isMooveValid(start.x, start.y, start.x+i, start.y+j);
-            printf("est ce que le moove %d/%d -> %d/%d est valide ? %d\n", start.x, start.y, start.x+i, start.y+j, moove);
-        }
-    }
-
+    printf("starting point : %d/%d \n", start.x, start.y);
+    printf("end point : %d/%d \n", end.x, end.y);
+    /*
     printf("\n\n");
     printf("...............test wall................");
     printf("\n\n");
@@ -145,11 +138,11 @@ int main(void) {
     printf("\n\n");
 
     dist = distEucli(start.x, start.y, start.x+1, start.y);
-    printf("distance entre la cas %d/%d et la case %d/%d (expected 1) ? %f\n",start.x, start.y, start.x+1, start.y, dist);
+    printf("distance entre la cas %d/%d et la case %d/%d  ? %f\n",start.x, start.y, start.x+1, start.y, dist);
     dist = distEucli(start.x, start.y, start.x+1, start.y+1);
-    printf("distance entre la cas %d/%d et la case %d/%d (expected sqtr(2)) ? %f\n",start.x, start.y, start.x+1, start.y+1, dist);
+    printf("distance entre la cas %d/%d et la case %d/%d  ? %f\n",start.x, start.y, start.x+1, start.y+1, dist);
     dist = distEucli(start.x, start.y, start.x+5, start.y-1);
-    printf("distance entre la cas %d/%d et la case %d/%d (expected sqrt(26)) ? %f\n",start.x, start.y, start.x+5, start.y-1, dist);
+    printf("distance entre la cas %d/%d et la case %d/%d  ? %f\n",start.x, start.y, start.x+5, start.y-1, dist);
 
     printf("\n\n");
     printf("...............test nb node................");
@@ -163,9 +156,9 @@ int main(void) {
     printf("\n\n");
 
     dist = pathLength(startWay);
-    printf("longueur du chemin de test (expected 5*sqrt(2)) (par pathLength) ? %f\n",dist);
-    dist = fitness(startWay);
-    printf("longueur du chemin de test (expected 5*sqrt(2)) (par fitness) ? %f\n",dist);
+    printf("longueur du chemin de test (par pathLength) ? %f\n",dist);
+    dist = fitness(startWay, &atlas);
+    printf("longueur du chemin de test (par fitness) ? %f\n",dist);
 
     printf("\n\n");
     printf("...............test followDir................");
@@ -174,27 +167,27 @@ int main(void) {
     act = start;
     printf("coord au départ : %d/%d\n", start.x, start.y);
     folowDir(&atlas, &act.x, &act.y, N);
-    printf("coord apres followdir N (expected 3/4) ? %d/%d \n",act.x, act.y);
+    printf("coord apres followdir N ? %d/%d \n",act.x, act.y);
     act = start;
     folowDir(&atlas, &act.x, &act.y, E);
-    printf("coord apres followdir E (expected 4/5) ? %d/%d \n",act.x, act.y);
+    printf("coord apres followdir E ? %d/%d \n",act.x, act.y);
     act = start;
     folowDir(&atlas, &act.x, &act.y, S);
-    printf("coord apres followdir S (expected 3/6) ? %d/%d \n",act.x, act.y);
+    printf("coord apres followdir S ? %d/%d \n",act.x, act.y);
     act = start;
     folowDir(&atlas, &act.x, &act.y, W);
-    printf("coord apres followdir W (expected 2/5) ? %d/%d \n",act.x, act.y);
+    printf("coord apres followdir W ? %d/%d \n",act.x, act.y);
 
     printf("\n\n");
     printf("...............test validStartingdir................");
     printf("\n\n");
 
     dir = validStartingDir(&atlas, start.x, start.y);
-    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d (expected 0) ? %d\n", start.x, start.y, dir);
+    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d ? %d\n", start.x, start.y, dir);
     dir = validStartingDir(&atlas, start.x-1, start.y-1);
-    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d (expected 1) ? %d\n", start.x-1, start.y-1, dir);
+    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d ? %d\n", start.x-1, start.y-1, dir);
     dir = validStartingDir(&atlas, 28, 4);
-    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d (expected 2) ? %d\n", 28, 4, dir);
+    printf("direction de départ pour la recherche en suivant le mur depuis la case %d/%d ? %d\n", 28, 4, dir);
 
     printf("\n\n");
     printf("...............test suivons le mur................");
@@ -309,17 +302,33 @@ int main(void) {
     printf("...............test choose best neighbor................");
     printf("\n\n");
 
-    bestNeighbor = chooseBestNeighbor(neighbors, 10);
-    printf("fitness bestNeighbor = %f\n", fitness(bestNeighbor));
+    bestNeighbor = chooseBestNeighbor(neighbors, 10, &atlas);
+    printf("fitness bestNeighbor = %f\n", fitness(bestNeighbor, &atlas));
     for(i=0; i<10; i++) {
-        printf("fitness voisin n°%d = %f\n", i, fitness(neighbors[i]));
+        printf("fitness voisin n°%d = %f\n", i, fitness(neighbors[i], &atlas));
     }
-
+    */
     printf("\n\n");
     printf("...............test simulated annealing................");
     printf("\n\n");
 
     path = *generateFirstPath(&atlas, start, end);
+    printPath(&path);
+    printf("\n\n");
     path = *simulatedAnnealing(&path, &atlas);
+    printPath(&path);
+
+
+    printf("\n\n");
+    printf("...............test gas consumption................");
+    printf("\n\n");
+
+    path = *generateFirstPath(&atlas, start, end);
+    gas = gasConsumptionForPath(&path);
+    printf("gas consommé pour le chemin de base? %d\n", gas);
+    path = *simulatedAnnealing(&path, &atlas);
+    gas = gasConsumptionForPath(&path);
+    printf("gas consommé pour le chemin modifié par SA? %d\n", gas);
+
     return 0;
 }

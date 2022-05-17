@@ -6,11 +6,12 @@
 typedef struct _Coord{
     int x;
     int y;
-} Coord;
+} Coord, Speed;
 
 typedef struct _Path {
     char content;
     Coord coord;
+    Speed speed;
     struct _Path* next;
 } Path;
 
@@ -25,7 +26,9 @@ Path* copy(Path* initialPath);
 
 double distEucli(int x1, int y1, int x2, int y2);
 double pathLength(Path* path);
-double fitness(Path* path);
+int isNodeSand(Path* path);
+double fitness(Path* path, Map* atlas);
+int gasConsumptionForPath(Path* path);
 
 void folowDir(Map* atlas, int* x, int* y, enum DIRECTION dir);
 enum DIRECTION validStartingDir(Map* atlas, int x, int y);
@@ -44,7 +47,7 @@ void correctPath(Path* path);
 
 void mutate(Path* path, Map* atlas);
 Path* generateNeighbor(Path* path, Map* atlas);
-Path* chooseBestNeighbor(Path** neighbors, int size);
+Path* chooseBestNeighbor(Path** neighbors, int size, Map* atlas);
 
 Path* simulatedAnnealing(Path* path, Map* atlas);
 

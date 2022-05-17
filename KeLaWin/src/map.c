@@ -136,10 +136,6 @@ void findEndPoint(Map* atlas, int* i, int* j) { /*s'arrete des qu'il trouve une 
 /*############################# to be or not to be ##########################################*/
 /*###########################################################################################*/
 
-int isMooveValid(int x1, int y1, int x2, int y2) {
-    return distEucli(x1, y1, x2, y2) < sqrt(5) ? 1 : 0;
-}
-
 int isAWall(int x, int y, Map* atlas) {
     return atlas->map[y][x] == '.'? 1 : 0;
 }

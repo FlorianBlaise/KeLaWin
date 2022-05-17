@@ -27,7 +27,6 @@ void fprintMap(Map* atlas, char* file_txt);
 void findStartingPoint(Map* atlas, int* i, int* j);
 void findEndPoint(Map* atlas, int* i, int* j);
 
-int isMooveValid(int x1, int y1, int x2, int y2);
 int isAWall(int x, int y, Map* atlas);
 int isThereWallLeft(Map* atlas, int x, int y, enum DIRECTION dir);
 int isThereWallForward(Map* atlas, int x, int y, enum DIRECTION dir);

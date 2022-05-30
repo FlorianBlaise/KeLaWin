@@ -6,7 +6,7 @@
 typedef struct _Coord{
     int x;
     int y;
-} Coord, Speed;
+} Coord, Speed, Accel;
 
 typedef struct _Path {
     char content;
@@ -28,16 +28,19 @@ double distEucli(int x1, int y1, int x2, int y2);
 double pathLength(Path* path);
 int isNodeSand(Path* path);
 double fitness(Path* path, Map* atlas);
+
+int gasConsumption(int accX, int accY, int speedX, int speedY, int inSand);
 int gasConsumptionForPath(Path* path);
 
 void folowDir(Map* atlas, int* x, int* y, enum DIRECTION dir);
 enum DIRECTION validStartingDir(Map* atlas, int x, int y);
 Path* generateFirstPath(Map* atlas, Coord start, Coord end);
+Path* generateFirstPathV2(Map* atlas, Coord start, Coord end);
 
 int isNodeInPath(Coord coord, Path* path);
-int isPopPossible(Path* path, int ri);
-int isMorphPossible(Path* path, int rx, int ry, int ri, Map* atlas);
-int isAddPossible(Path* path, int rx, int ry, int ri, Map* atlas);
+int isPopPossible(Path* path);
+int isMorphPossible(Path* path, int rx, int ry, Map* atlas);
+int isAddPossible(Path* path, int rx, int ry, Map* atlas);
 
 void pop(Path* path, int indice);
 void morph(Path* path, int rx, int ry, int indice, Map* atlas);

@@ -1,5 +1,6 @@
 #include "map.h"
 #include "path.h"
+#include <string.h>
 
 /*###########################################################################################*/
 /*############################ Creation de la carte #########################################*/
@@ -13,7 +14,11 @@ int readAndCreateMap(Map* atlas, char* ficName) {
     FILE* inputFile;
 
     j=0;
-    inputFile = fopen(ficName, "r");
+    if (strcmp(ficName,"input") == 0) {
+        inputFile = stdin;
+    } else {
+        inputFile = fopen(ficName, "r");
+    }
 
     if (inputFile == NULL) {
         printf("fichier non trouvé\n");
@@ -78,7 +83,12 @@ void fprintMap(Map* atlas, char* file_txt) {
     int i;
     int j;
 
-    FILE* file = fopen(file_txt,"a");
+    FILE* file;
+    if(strcmp(file_txt,"out") == 0) {
+        file = stderr;
+    } else {
+        file = fopen(file_txt,"a");
+    }
 
     if ( file == NULL ) {
         fprintf( stderr, "Cannot open file %s\n", file_txt);
@@ -117,6 +127,9 @@ void findStartingPoint(Map* atlas, int* i, int* j) {
 void findEndPoint(Map* atlas, int* i, int* j) { /*s'arrete des qu'il trouve une arrivée!*/
     int y;
     int x;
+
+    *i = 0;
+    *j = 0;
 
     for (y=0; y<atlas->heigth; y++) {
         for (x=0; x<atlas->width; x++) {

@@ -6,17 +6,19 @@
 /*###########################################################################################*/
 
 int nbNode(Path* path) {
-    int cpt = 0;
-    while(path != NULL) {
-        cpt ++;
-        path = path->next;
+    if(path == NULL) {
+        return 0;
     }
-    return cpt;
+    return nbNode(path->next)+1;
 }
 
 void printPath(Path* path) {
     int i;
     int n;
+    if (path == NULL) {
+        printf("je suis null\n");
+        return;
+    }
     n= nbNode(path);
     for(i=0; i<n; i++) {
         printf("coord = (%d ; %d) & spd = (%d ; %d)/ ", path->coord.x, path->coord.y, path->speed.x, path->speed.y);
@@ -29,7 +31,12 @@ void fprintPath(Path* path, char* file_txt) {
     int i;
     int n;
     
-    FILE* file = fopen(file_txt,"a");
+    FILE* file;
+    if(strcmp(file_txt,"out") == 0) {
+        file = stderr;
+    } else {
+        file = fopen(file_txt,"a");
+    }
 
     n= nbNode(path);
 
@@ -91,7 +98,7 @@ void fdisplayPath(Path* path, Map* atlas) {
 
 Path* copy(Path* initialPath) {
     int i;
-    int n;
+    int n = 0;
     Path* copiedPath = (Path *) malloc(sizeof(Path));
     Path* start = copiedPath;
 
@@ -120,6 +127,8 @@ Path* createNode(char content, Coord coord) {
     Path* next = (Path*) malloc(sizeof(Path));
     next->content = content;
     next->coord = coord;
+    next->speed.x = 0;
+    next->speed.y = 0;
     return next;
 }
 
@@ -214,15 +223,13 @@ double pathLength(Path* path) {
 
 double fitness(Path* path, Map* atlas) {
     double n = (double) nbNode(path);
+    /*
     double dist = pathLength(path);
     double nbSand = (double) howManySandInPath(path);
     double gas = (double) gasConsumptionForPath(path);
+    */
 
-    if (gas > atlas->startingGas) {
-        return 9999;
-    }
-
-    return 2*dist + n + 10*nbSand - 10*gas;
+    return n;
 }
 
 /*###########################################################################################*/
@@ -264,27 +271,27 @@ Path* generateFirstPath(Map* atlas, Coord start, Coord end) {
     dir = validStartingDir(atlas, cur.x, cur.y);
 
     path = createNode(atlas->map[cur.y][cur.x], cur);
-    path->next = (Path *) malloc(sizeof(Path));
     startPath = path;
 
     while( cur.x != end.x || cur.y != end.y) {
         
         folowDir(atlas, &cur.x, &cur.y, dir);
         path->next = createNode(atlas->map[cur.y][cur.x], cur);
-        updateNextSpeed(path);
+        path = path->next;
 
         if (isThereWallForward(atlas, cur.x, cur.y, dir) == 1) {
             dir = (dir+1)%4;
             sumAngl++;
             continue;
-        }
-        if (isThereWallLeft(atlas, cur.x, cur.y, dir) == 0) {
+        } else if (isThereWallLeft(atlas, cur.x, cur.y, dir) == 0) {
             if (sumAngl != 0) {
                 dir = (dir-1)%4;
                 sumAngl--;
+            } else {
+                dir = (dir+1)%4;
+                sumAngl++;
             }
         }
-        path = path->next;
     }
     return startPath;
 }
@@ -304,14 +311,14 @@ int isNodeInPath(Coord coord, Path* path) {
 
 int isMooveValid(Path* path, int nextX, int nextY) {
     int speedNorm = sqrt(path->speed.x*path->speed.x + path->speed.y*path->speed.y);
-    if ( isNodeSand(path) ) {
-        return speedNorm > 1 ? 0 : 1;
-    } else {
-        if ( abs(nextX - path->coord.x) - path->speed.x <= 1 && abs(path->coord.y - nextY) - path->speed.y <= 1) {
+    if ( abs(abs(nextX - path->coord.x) - path->speed.x) == 1 && abs(abs(path->coord.y - nextY) - path->speed.y) == 1) {
+        if ( isNodeSand(path) ) {
+            return speedNorm > 1 ? 0 : 1;
+        } else {
             return speedNorm > 5 ? 0 : 1;
         }
-        return 0;
     }
+    return 0;
 }
 
 void pop(Path* path, int n) {
@@ -322,11 +329,7 @@ void pop(Path* path, int n) {
     path->next = path->next->next;
 }
 
-int isPopPossible(Path* path, int ri) {
-    int i;
-    for (i=0; i<ri; i++) {
-        path = path->next;
-    }
+int isPopPossible(Path* path) {
     if ( isMooveValid(path, path->next->next->coord.x, path->next->next->coord.y) ) {
         return 1;
     }
@@ -343,25 +346,21 @@ void morph(Path* path, int rx, int ry, int n, Map* atlas) {
     path->content = atlas->map[path->coord.y][path->coord.x];
 }
 
-int isMorphPossible(Path* path, int rx, int ry, int ri, Map* atlas) {
-    int i;
-    for (i=0; i<ri-1; i++) {
+int isMorphPossible(Path* path, int rx, int ry, Map* atlas) {
+    if (isMooveValid(path, path->next->coord.x+rx, path->next->coord.y+ry)) {
         path = path->next;
-    }
 
-    path->coord.x += rx;
-    path->coord.y += ry;
-    if (isMooveValid(path, path->next->coord.x, path->next->coord.y)) {
-        path = path->next;
+        path->coord.x += rx;
+        path->coord.y += ry;
         if ( !isAWall(path->coord.x, path->coord.y, atlas) && isMooveValid(path, path->next->coord.x, path->next->coord.y) ) {
             path->coord.x -= rx;
             path->coord.y -= ry;
             return 1;
         }
+        path->coord.x -= rx;
+        path->coord.y -= ry;
     }
-    path->coord.x -= rx;
-    path->coord.y -= ry;
-    
+   
     return 0;
 }
 
@@ -385,68 +384,55 @@ void add(Path* path, int rx, int ry, int n, Map* atlas) {
     path->next = newPath;
 }
 
-int isAddPossible(Path* path, int rx, int ry, int ri, Map* atlas) {
-    int i;
-    for (i=0; i<ri-1; i++) {
+int isAddPossible(Path* path, int rx, int ry, Map* atlas) {
+
+    if (isMooveValid(path, path->next->coord.x+rx, path->next->coord.y+ry)) {
         path = path->next;
-    }
-    path->coord.x += rx;
-    path->coord.y += ry;
-    if (isMooveValid(path, path->next->coord.x, path->next->coord.y)) {
-        path = path->next;
+
+        path->coord.x += rx;
+        path->coord.y += ry;
         if ( !isAWall(path->coord.x, path->coord.y, atlas) && isMooveValid(path, path->next->coord.x, path->next->coord.y) ) {
             path->coord.x -= rx;
             path->coord.y -= ry;
             return 1;
         }
+        path->coord.x -= rx;
+        path->coord.y -= ry;
     }
-    path->coord.x -= rx;
-    path->coord.y -= ry;
+   
     return 0;
 }
 
 void mutate(Path* path, Map* atlas) {
-    int i = 1;
     double r;
 
     int rx;
     int ry;
-
-    int ri;
-
-    int n;
 
     rx = (rand()%3)-1;
     ry = (rand()%3)-1;
 
     r = rand()/(RAND_MAX+1.0);
 
-    n = nbNode(path);
-
-    ri = (rand()%n);
-
-    if (ri > 0 && ri < n) {
-        if (r< 0.7) {
-            i ++;
-            if ( ri < n-i && isMorphPossible(path, rx, ry, ri, atlas) )  {
-                morph(path, rx, ry, ri, atlas);
-            } else {
-                i--;
-            }
-        } else if (r>0.7 && r<0.9) {
-            i++;
-            if ( ri < n-i && isPopPossible(path, ri) ) {
-                pop(path, ri);
-            } else {
-                i--;
-            }
+    if (r< 0.333) {
+        if ( isMorphPossible(path, rx, ry, atlas) )  {
+            morph(path, rx, ry, 0, atlas);
+            printf("-->morph");
         } else {
-            if ( ri < n-i && isAddPossible(path, rx, ry, ri, atlas)) {
-                i--;
-                add(path, rx, ry, ri, atlas);
-            } 
         }
+    } else if (r>0.333 && r<0.666) {
+        if ( isPopPossible(path) ) {
+            pop(path, 0);
+            printf("-->pop");
+        } else {
+        }
+    } else {
+        if ( isAddPossible(path, rx, ry, atlas) ) {
+            add(path, rx, ry, 0, atlas);
+            printf("-->add");
+        } 
     }
+
 }
 
 Path* generateNeighbor(Path* path, Map* atlas) {
@@ -455,16 +441,18 @@ Path* generateNeighbor(Path* path, Map* atlas) {
     double r;
     double mutatingProbabilitie = 0.3;
 
-    while (neighbor != NULL) {
+    while(neighbor != NULL) {
         if (neighbor->content != '=' && neighbor->next->content != '=') { /*pour ne pas modifier l'arrivé*/
-        r = rand()/(RAND_MAX+1.0);
+            r = rand()/(RAND_MAX+1.0);
+            /*updateNextSpeed(neighbor);*/
             if (r < mutatingProbabilitie ) {
                 mutate(neighbor, atlas);
             }
-        updateNextSpeed(neighbor);
+            /*updateNextSpeed(neighbor);*/
         }
         neighbor = neighbor->next;
     }
+    printf("oui\n");
     correctPath(start);
     return start;
 }
@@ -474,9 +462,12 @@ void correctPath(Path* path) {
     int n = nbNode(path);
 
     for(i=0; i<n; i++) {
-        if (path != NULL) {
+        if (path != NULL && path->next != NULL) {
             if (isNodeInPath(path->coord, path->next)) {
                 pop(path, 0);
+            } 
+            if (path->next->content == '.') {
+                pop(path,0);
             }
         path = path->next;
         }
@@ -493,7 +484,6 @@ Path* chooseBestNeighbor(Path** neighbors, int size, Map* atlas ) {
             bestPath = neighbors[i];
         }
     }
-
     return bestPath;
 }
 
@@ -519,10 +509,15 @@ Path* simulatedAnnealing(Path* path, Map* atlas) {
     fdisplayPath(path, atlas);
 
     while (temperature > epsilon) {
+        
         for(i=0; i<10; i++) {
             neighbors[i] = generateNeighbor(bestPath, atlas);
+            printf("%d\n",i);
+            
         }
         bestNeighbor = chooseBestNeighbor(neighbors, 10, atlas);
+
+        printf("fitness du meilleur voisin: %f\n", fitness(bestNeighbor, atlas));
 
         if (fitness(bestNeighbor, atlas) <= fitness(bestPath, atlas)) {
             bestPath = bestNeighbor;
@@ -534,7 +529,8 @@ Path* simulatedAnnealing(Path* path, Map* atlas) {
         }
 
         temperature *= coolingFactor;
-   
+        fdisplayPath(bestPath, atlas);
+        printf("tmp = %f\n\n", temperature);
     }
     fdisplayPath(bestPath, atlas);
     printf("fitness du meilleur chemin: %f\n\n", fitness(bestPath, atlas));
@@ -563,10 +559,26 @@ void LookForPath(Map* atlas, Path* path) {
 
     path = generateFirstPath(atlas, start, end);
 
-    fdisplayPath(path, atlas);
     printf("path length (longer mur): %f\n", fitness(path, atlas));
 
     path = simulatedAnnealing(path, atlas);
-    fdisplayPath(path, atlas);
     printf("path length (recuit): %f\n", fitness(path, atlas));
+}
+
+/*###########################################################################################*/
+/*########################### fonction du gestionnaire ######################################*/
+/*###########################################################################################*/
+
+Speed getSpd(Path* path) {
+    Speed spd;
+    spd.x = path->coord.x-path->next->coord.x;
+    spd.y = path->coord.y-path->next->coord.y;
+    return spd;
+}
+
+Accel getAcc(Speed speed1, Speed speed2) {
+    Accel acc;
+    acc.x = speed1.x-speed2.x;
+    acc.y = speed1.y-speed2.y;
+    return acc;
 }

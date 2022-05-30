@@ -37,7 +37,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = GrandPrix1.0.0
-DISTDIR = /home/fblaise/Documents/GrandPrix2021_4.0.2/.obj/GrandPrix1.0.0
+DISTDIR = /home/fblaise/Documents/grandPrix_git/KeLaWin/.obj/GrandPrix1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1
 LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
@@ -441,7 +441,7 @@ compiler_moc_header_clean:
 		include/gpmapview.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/grandprix.h -o .moc/moc_grandprix.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/grandprix.h -o .moc/moc_grandprix.cpp
 
 .moc/moc_gpcontrolview.cpp: include/gpcontrolview.h \
 		include/gpcontrol.h \
@@ -450,52 +450,52 @@ compiler_moc_header_clean:
 		include/stderrview.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpcontrolview.h -o .moc/moc_gpcontrolview.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpcontrolview.h -o .moc/moc_gpcontrolview.cpp
 
 .moc/moc_gpmapview.cpp: include/gpmapview.h \
 		include/gpcontrol.h \
 		include/car.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpmapview.h -o .moc/moc_gpmapview.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpmapview.h -o .moc/moc_gpmapview.cpp
 
 .moc/moc_gpmapselector.cpp: include/gpmapselector.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpmapselector.h -o .moc/moc_gpmapselector.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpmapselector.h -o .moc/moc_gpmapselector.cpp
 
 .moc/moc_gpcontrol.cpp: include/gpcontrol.h \
 		include/car.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpcontrol.h -o .moc/moc_gpcontrol.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpcontrol.h -o .moc/moc_gpcontrol.cpp
 
 .moc/moc_gpdriverselector.cpp: include/gpdriverselector.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpdriverselector.h -o .moc/moc_gpdriverselector.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpdriverselector.h -o .moc/moc_gpdriverselector.cpp
 
 .moc/moc_finishdialog.cpp: include/finishdialog.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/finishdialog.h -o .moc/moc_finishdialog.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/finishdialog.h -o .moc/moc_finishdialog.cpp
 
 .moc/moc_gpprogression.cpp: include/gpprogression.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpprogression.h -o .moc/moc_gpprogression.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/gpprogression.h -o .moc/moc_gpprogression.cpp
 
 .moc/moc_headless.cpp: include/headless.h \
 		include/gpcontrol.h \
 		include/car.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/headless.h -o .moc/moc_headless.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/headless.h -o .moc/moc_headless.cpp
 
 .moc/moc_stderrview.cpp: include/stderrview.h \
 		.moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/GrandPrix2021_4.0.2/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/GrandPrix2021_4.0.2 -I/home/fblaise/Documents/GrandPrix2021_4.0.2/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/stderrview.h -o .moc/moc_stderrview.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/fblaise/Documents/grandPrix_git/KeLaWin/.moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/fblaise/Documents/grandPrix_git/KeLaWin -I/home/fblaise/Documents/grandPrix_git/KeLaWin/include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/stderrview.h -o .moc/moc_stderrview.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:

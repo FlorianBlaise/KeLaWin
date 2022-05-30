@@ -2,21 +2,21 @@
 #include "path.h"
 
 int main(void) {
-    Map atlas; /*atlasCopied;*/
-    Path path;
-    /*
+    Map atlas, atlasCopied;
+    Path* path;
+    
     Path* way;
     Path* copiedWay1;
     Path* copiedWay2;
     Path* startWay;
     Path* neighbors[10];
-    Path* bestNeighbor; */
-    Coord start, end; /*act, zero, random;
+    Path* bestNeighbor; 
+    Coord start, end, act, zero, random;
     enum DIRECTION dir;
-    int moove, wall, wallLeft, wallForward, inPath;
-    int i, j;
+    int wall, wallLeft, wallForward, inPath;
+    int i;
     double dist;
-    int cpt; */
+    int cpt; 
     int gas;
     
 
@@ -24,14 +24,14 @@ int main(void) {
 
     readAndCreateMap(&atlas, "../tracks/starter_serpent.txt");
     printMap(&atlas);
-    /*
+    
     printf("\n\n");
     printf("...............copy map................");
     printf("\n\n");
 
     atlasCopied = *copyMap(&atlas);
     printMap(&atlasCopied);
-    */
+    
 
     printf("\n\n");
     printf("...............test start/end................");
@@ -42,7 +42,7 @@ int main(void) {
 
     printf("starting point : %d/%d \n", start.x, start.y);
     printf("end point : %d/%d \n", end.x, end.y);
-    /*
+    
     printf("\n\n");
     printf("...............test wall................");
     printf("\n\n");
@@ -193,8 +193,8 @@ int main(void) {
     printf("...............test suivons le mur................");
     printf("\n\n");
 
-    path = *generateFirstPath(&atlas, start, end);
-    displayPath(&path, &atlas);
+    path = generateFirstPath(&atlas, start, end);
+    displayPath(path, &atlas);
     printf("la carte ne doit pas etre modifié :\n");
     printMap(&atlas);
 
@@ -218,81 +218,81 @@ int main(void) {
     act.x++;
     act.y--;
 
-    inPath = isNodeInPath(start, &path);
+    inPath = isNodeInPath(start, path);
     printf("est ce que la case %d/%d est dans le chemin (start) ? %d\n",start.x, start.y, inPath);
-    inPath = isNodeInPath(end, &path);
+    inPath = isNodeInPath(end, path);
     printf("est ce que la case %d/%d est dans le chemin (end) ? %d\n",end.x, end.y, inPath);
-    inPath = isNodeInPath(zero, &path);
+    inPath = isNodeInPath(zero, path);
     printf("est ce que la case %d/%d est dans le chemin (zero) ? %d\n",zero.x, zero.y, inPath);
-    inPath = isNodeInPath(act, &path);
+    inPath = isNodeInPath(act, path);
     printf("est ce que la case %d/%d est dans le chemin (start+1) ? %d\n",act.x, act.y, inPath);
 
     printf("\n\n");
     printf("...............test savoir si pop est possible................");
     printf("\n\n");
 
-    printPath(&path);
-    pop(&path, 0);
-    printPath(&path);
-    pop(&path, 1);
-    printPath(&path);
-    pop(&path, 5);
-    printPath(&path);
+    printPath(path);
+    pop(path, 0);
+    printPath(path);
+    pop(path, 1);
+    printPath(path);
+    pop(path, 5);
+    printPath(path);
 
     printf("\n\n");
     printf("...............test savoir si morphe possible................");
     printf("\n\n");
 
-    printPath(&path);
-    morph(&path, 1, 1, 0, &atlas);
-    printPath(&path);
-    morph(&path, 1, 1, 2, &atlas);
-    printPath(&path);
-    morph(&path, 1, -1, 5, &atlas);
-    printPath(&path);
+    printPath(path);
+    morph(path, 1, 1, 0, &atlas);
+    printPath(path);
+    morph(path, 1, 1, 2, &atlas);
+    printPath(path);
+    morph(path, 1, -1, 5, &atlas);
+    printPath(path);
 
     printf("\n\n");
     printf("...............test savoir si add possible................");
     printf("\n\n");
 
-    printPath(&path);
+    printPath(path);
     random.x = 0;
     random.y = 0;
-    add(&path, random.x, random.y, 2, &atlas);
-    printPath(&path);
+    add(path, random.x, random.y, 2, &atlas);
+    printPath(path);
     random.x = 1;
     random.y = 1;
-    add(&path, random.x, random.y, 2, &atlas);
-    printPath(&path);
+    add(path, random.x, random.y, 2, &atlas);
+    printPath(path);
     random.x = 2;
     random.y = 2;
-    add(&path, random.x, random.y, 2, &atlas);    
-    printPath(&path);
+    add(path, random.x, random.y, 2, &atlas);    
+    printPath(path);
 
     printf("\n\n");
     printf("...............test mutate................");
     printf("\n\n");
 
-    path = *generateFirstPath(&atlas, start, end);
+    path = generateFirstPath(&atlas, start, end);
     printf("chemin sans mutation : \n");
-    printPath(&path);
+    printPath(path);
     printf("chemin apres 10 mutations aléatoires : \n");
     for(i=0; i<10; i++) {
-        mutate(&path, &atlas);
+        mutate(path, &atlas);
     }
     printf("\n");
-    printPath(&path);
+    printPath(path);
 
     printf("\n\n");
     printf("...............test generation de voisin................");
     printf("\n\n");
 
-    path = *generateFirstPath(&atlas, start, end);
+    path = generateFirstPath(&atlas, start, end);
     printf("chemin de départ : \n");
-    printPath(&path);
-    displayPath(&path, &atlas);
+    printPath(path);
+    displayPath(path, &atlas);
     for(i=0; i<10; i++) {
-        neighbors[i] = generateNeighbor(&path, &atlas);
+        neighbors[i] = generateNeighbor(path, &atlas);
         printf("voisin n°%d :\n",i);
         printPath(neighbors[i]);
         displayPath(neighbors[i], &atlas);
@@ -307,27 +307,27 @@ int main(void) {
     for(i=0; i<10; i++) {
         printf("fitness voisin n°%d = %f\n", i, fitness(neighbors[i], &atlas));
     }
-    */
+    
     printf("\n\n");
     printf("...............test simulated annealing................");
     printf("\n\n");
 
-    path = *generateFirstPath(&atlas, start, end);
-    printPath(&path);
+    path = generateFirstPath(&atlas, start, end);
+    printf("add path = %p\n",path);
+    printPath(path);
     printf("\n\n");
-    path = *simulatedAnnealing(&path, &atlas);
-    printPath(&path);
-
+    path = simulatedAnnealing(path, &atlas);
+    printPath(path);
 
     printf("\n\n");
     printf("...............test gas consumption................");
     printf("\n\n");
 
-    path = *generateFirstPath(&atlas, start, end);
-    gas = gasConsumptionForPath(&path);
+    path = generateFirstPath(&atlas, start, end);
+    gas = gasConsumptionForPath(path);
     printf("gas consommé pour le chemin de base? %d\n", gas);
-    path = *simulatedAnnealing(&path, &atlas);
-    gas = gasConsumptionForPath(&path);
+    path = simulatedAnnealing(path, &atlas);
+    gas = gasConsumptionForPath(path);
     printf("gas consommé pour le chemin modifié par SA? %d\n", gas);
 
     return 0;

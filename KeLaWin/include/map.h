@@ -7,7 +7,7 @@
 #include <math.h>
 #include <time.h>
 
-#define MAX_LINE_LENGTH 512
+#define MAX_LINE_LENGTH 1024
 
 enum DIRECTION {N, E, S, W};
 

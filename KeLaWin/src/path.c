@@ -45,7 +45,6 @@ void fprintPath(Path* path, char* file_txt) {
         path = path->next;
     }
     fprintf(file,"\n\n");
-    fclose(file);
 }
 
 void displayPath(Path* path, Map* atlas) {
@@ -220,18 +219,17 @@ double pathLength(Path* path) {
     }
     return dist;
 }
-
+/*
 double fitness(Path* path, Map* atlas) {
     double n = (double) nbNode(path);
-    /*
     double dist = pathLength(path);
     double nbSand = (double) howManySandInPath(path);
     double gas = (double) gasConsumptionForPath(path);
-    */
+    
 
     return n;
 }
-
+*/
 /*###########################################################################################*/
 /*################################ suivons le mur ###########################################*/
 /*###########################################################################################*/
@@ -299,6 +297,8 @@ Path* generateFirstPath(Map* atlas, Coord start, Coord end) {
 /*###########################################################################################*/
 /*################################ Recuit Simulé ############################################*/
 /*###########################################################################################*/
+
+/*
 int isNodeInPath(Coord coord, Path* path) {
     while (path != NULL) {
         if ( path->coord.x == coord.x && path->coord.y == coord.y ) {
@@ -442,13 +442,11 @@ Path* generateNeighbor(Path* path, Map* atlas) {
     double mutatingProbabilitie = 0.3;
 
     while(neighbor != NULL) {
-        if (neighbor->content != '=' && neighbor->next->content != '=') { /*pour ne pas modifier l'arrivé*/
+        if (neighbor->content != '=' && neighbor->next->content != '=') {
             r = rand()/(RAND_MAX+1.0);
-            /*updateNextSpeed(neighbor);*/
             if (r < mutatingProbabilitie ) {
                 mutate(neighbor, atlas);
             }
-            /*updateNextSpeed(neighbor);*/
         }
         neighbor = neighbor->next;
     }
@@ -536,11 +534,11 @@ Path* simulatedAnnealing(Path* path, Map* atlas) {
     printf("fitness du meilleur chemin: %f\n\n", fitness(bestPath, atlas));
     return bestPath;
 }
-
+*/
 /*###########################################################################################*/
 /*############################ Cherchons notre chemin #######################################*/
 /*###########################################################################################*/
-
+/*
 void LookForPath(Map* atlas, Path* path) {
     int startX = 0;
     int startY = 0;
@@ -564,7 +562,7 @@ void LookForPath(Map* atlas, Path* path) {
     path = simulatedAnnealing(path, atlas);
     printf("path length (recuit): %f\n", fitness(path, atlas));
 }
-
+*/
 /*###########################################################################################*/
 /*########################### fonction du gestionnaire ######################################*/
 /*###########################################################################################*/

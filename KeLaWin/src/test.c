@@ -1,6 +1,6 @@
 #include "map.h"
 #include "path.h"
-
+/*
 int main(void) {
     Map atlas, atlasCopied;
     Path* path;
@@ -331,4 +331,4 @@ int main(void) {
     printf("gas consommé pour le chemin modifié par SA? %d\n", gas);
 
     return 0;
-}
+}*/

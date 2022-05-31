@@ -7,11 +7,6 @@ LDLIBS = -lm
 INCLUDE_PATH = -I./include
 SRC_PATH = ./src
 
-SANITIZE=off
-ifeq ($(SANITIZE),on)
-CFLAGS += -fsanitize=address
-endif
-
 .PHONY: all clean distclean install try
 
 DRIVERS_PATH = ../drivers
@@ -26,8 +21,8 @@ try: install
 $(DRIVERS_PATH)/$(PILOT_NAME): $(PILOT_NAME)
 	cp $(PILOT_NAME) $(DRIVERS_PATH)
 
-$(PILOT_NAME): $(PILOT_NAME).c $(SRC_PATH)/map.c $(SRC_PATH)/path.c
-	$(CC) $(CFLAGS) -o $@ $^ $(INCLUDE_PATH) $(LDLIBS)
+$(PILOT_NAME): $(PILOT_NAME).c $(SRC_PATH)/*.c
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) -o $@ $^ $(LDLIBS)
 
 distclean: clean
 	rm -f $(PILOT_NAME)

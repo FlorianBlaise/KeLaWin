@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "./include/map.h"
-#include "./include/path.h"
+#include "map.h"
+#include "path.h"
+
 #define BOOSTS_AT_START 5
 
 int main()
@@ -24,29 +25,27 @@ int main()
 
   boosts = boosts;                       /* Prevent warning "unused variable" */  
   fgets(line_buffer, MAX_LINE_LENGTH, stdin);      /* Read gas level at Start */  
-  sscanf(line_buffer, "%d %d %d", &width, &height, &gasLevel);                    
+  sscanf(line_buffer, "%d %d %d", &width, &height, &gasLevel);   
+
   fprintf(stderr, "=== >Map< ===\n");                                             
   fprintf(stderr, "Size %d x %d\n", width, height);                               
-  fprintf(stderr, "Gas at start %d \n\n", gasLevel);                              
-  for (row = 0; row < height; ++row) {        /* Read map data, line per line */  
-    fgets(line_buffer, MAX_LINE_LENGTH, stdin);   /* on stock la carte dans line buffer */                                
-    fputs(line_buffer, stderr);                   /* on la print dans la sortie d'erreur */                                
-  }                                                                               
+  fprintf(stderr, "Gas at start %d \n\n", gasLevel);
+
+  atlas.heigth = height;
+  atlas.width = width;
+  atlas.startingGas = gasLevel;
+
+  atlas.map = (char **) malloc( atlas.heigth*sizeof(char *));
+  for (row = 0; row < height; row++) {        /* Read map data, line per line */  
+    atlas.map[row] = (char *) malloc( atlas.width*sizeof(char));
+    fgets(atlas.map[row],MAX_LINE_LENGTH, stdin);   /* on stock la carte dans line buffer */     
+    fputs(atlas.map[row], stderr);                   /* on la print dans la sortie d'erreur */                                
+  }
+                                                                           
   fflush(stderr);                                                                 
   fprintf(stderr, "\n=== Race start ===\n");                                      
 
-  readAndCreateMap(&atlas, "input");
-  fprintf(stderr, "1");
-  findStartingPoint(&atlas, &start.x, &start.y);
-  fprintf(stderr, "1");
   findEndPoint(&atlas, &end.x, &end.y);
-  fprintf(stderr, "1");
-  path = *generateFirstPath(&atlas, start, end);
-  fprintf(stderr, "1");
-  fprintMap(&atlas, "err.txt");
-  fprintf(stderr, "1");
-  fprintPath(&path, "err.txt");
-  fprintf(stderr, "1");
   
   while (!feof(stdin)) {                                                          
     int myX, myY, secondX, secondY, thirdX, thirdY;                               
@@ -58,16 +57,23 @@ int main()
            &myX, &myY, &secondX, &secondY, &thirdX, &thirdY);                     
     fprintf(stderr, "    Positions: Me(%d,%d)  A(%d,%d), B(%d,%d)\n",             
             myX, myY, secondX, secondY, thirdX, thirdY);                          
-    fflush(stderr);                                                               
-    /* Gas consumption cannot be accurate here. */                                
-    gasLevel += gasConsumption(accelerationX, accelerationY, speedX, speedY, 0);  
-    speedX += accelerationX;                                                      
-    speedY += accelerationY;                                                      
+    fflush(stderr);                                                                                                                  
 
     /*------------modifier cette partie pour le trajet quitte à la déplacer en haut------------*/
-    if (speedX > 4) {
-      accelerationX = 0;
-    }
+    start.x = myX;
+    start.y = myY;
+
+    path = *generateFirstPath(&atlas, start, end);
+    fprintPath(&path,"out");
+    fprintf(stderr, "pos = %d-%d/ next = %d-%d",start.x, start.y, path.next->coord.x, path.next->coord.y);
+
+    accelerationX = (path.next->coord.x-start.x) - speedX;
+    accelerationY = (path.next->coord.y-start.y) - speedY;
+                              
+    gasLevel += gasConsumption(accelerationX, accelerationY, speedX, speedY, 0);  
+    speedX += accelerationX;                                                      
+    speedY += accelerationY;
+
     /*------------fin de la partie à modifier-------------*/
 
     /* Write the acceleration request to the race manager (stdout). */

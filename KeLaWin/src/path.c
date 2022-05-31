@@ -260,6 +260,7 @@ enum DIRECTION validStartingDir(Map* atlas, int x, int y) {
 }
 
 Path* generateFirstPath(Map* atlas, Coord start, Coord end) {
+    int iter=0;
     Coord cur = start;
     int sumAngl = 0;
     enum DIRECTION dir;
@@ -272,23 +273,35 @@ Path* generateFirstPath(Map* atlas, Coord start, Coord end) {
     startPath = path;
 
     while( cur.x != end.x || cur.y != end.y) {
-        
-        folowDir(atlas, &cur.x, &cur.y, dir);
-        path->next = createNode(atlas->map[cur.y][cur.x], cur);
-        path = path->next;
 
-        if (isThereWallForward(atlas, cur.x, cur.y, dir) == 1) {
-            dir = (dir+1)%4;
-            sumAngl++;
-            continue;
-        } else if (isThereWallLeft(atlas, cur.x, cur.y, dir) == 0) {
-            if (sumAngl != 0) {
+        if (isThereWallForward(atlas, cur.x, cur.y, dir) == 0) {
+            folowDir(atlas, &cur.x, &cur.y, dir);
+        } else if (sumAngl > 0 ) {
+            if(isThereWallLeft(atlas, cur.x, cur.y, dir) == 0 ) {
                 dir = (dir-1)%4;
                 sumAngl--;
             } else {
                 dir = (dir+1)%4;
                 sumAngl++;
             }
+            folowDir(atlas, &cur.x, &cur.y, dir);
+        } else {
+            if(isThereWallRigth(atlas, cur.x, cur.y, dir) == 0) {
+                dir = (dir+1)%4;
+                sumAngl++;
+            } else {
+                dir = (dir-1)%4;
+                sumAngl--;
+            }
+            folowDir(atlas, &cur.x, &cur.y, dir);
+        } 
+
+        path->next = createNode(atlas->map[cur.y][cur.x], cur);
+        path = path->next;
+
+        iter++;
+        if(iter == 500) {
+            break;
         }
     }
     return startPath;

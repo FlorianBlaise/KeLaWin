@@ -155,22 +155,47 @@ int isAWall(int x, int y, Map* atlas) {
 
 int isThereWallLeft(Map* atlas, int x, int y, enum DIRECTION dir) {
     if (dir == N) {
-        if (x <= 0 || atlas->map[y][x-1] != '.') {
+        if (x <= 0 || atlas->map[y][x-1] =='#') {
             return 0;
         }
         return 1;
     } else if (dir == E) {
-        if (y <= 0 || atlas->map[y-1][x] != '.') {
+        if (y <= 0 || atlas->map[y-1][x] =='#') {
             return 0;
         }
         return 1;
     } else if (dir == S) {
-        if (x >= atlas->width || atlas->map[y][x+1] != '.') {
+        if (x >= atlas->width || atlas->map[y][x+1] =='#') {
             return 0;
         }
         return 1;
     } else if (dir == W) {
-        if (x >= atlas->heigth || atlas->map[y+1][x] != '.') {
+        if (x >= atlas->heigth || atlas->map[y+1][x] =='#') {
+            return 0;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+int isThereWallRigth(Map* atlas, int x, int y, enum DIRECTION dir) {
+    if (dir == N) {
+        if (x <= 0 || atlas->map[y][x+1] =='#') {
+            return 0;
+        }
+        return 1;
+    } else if (dir == E) {
+        if (y <= 0 || atlas->map[y+1][x] =='#') {
+            return 0;
+        }
+        return 1;
+    } else if (dir == S) {
+        if (x >= atlas->width || atlas->map[y][x-1] =='#') {
+            return 0;
+        }
+        return 1;
+    } else if (dir == W) {
+        if (x >= atlas->heigth || atlas->map[y-1][x] =='#') {
             return 0;
         }
         return 1;
@@ -185,17 +210,17 @@ int isThereWallForward(Map* atlas, int x, int y, enum DIRECTION dir) {
         }
         return 1;
     } else if (dir == E) {
-        if (x >= atlas->width || atlas->map[y][x+1] != '.') {
+        if (x >= atlas->width || atlas->map[y][x+1] =='#') {
             return 0;
         }
         return 1;
     } else if (dir == S) {
-        if (y >= atlas->heigth || atlas->map[y+1][x] != '.') {
+        if (y >= atlas->heigth || atlas->map[y+1][x] =='#') {
             return 0;
         }
         return 1;
     } else if (dir == W) {
-        if (x <= 0 || atlas->map[y][x-1] != '.') {
+        if (x <= 0 || atlas->map[y][x-1] =='#') {
             return 0;
         }
         return 1;

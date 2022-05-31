@@ -29,6 +29,7 @@ void findEndPoint(Map* atlas, int* i, int* j);
 
 int isAWall(int x, int y, Map* atlas);
 int isThereWallLeft(Map* atlas, int x, int y, enum DIRECTION dir);
+int isThereWallRigth(Map* atlas, int x, int y, enum DIRECTION dir);
 int isThereWallForward(Map* atlas, int x, int y, enum DIRECTION dir);
 
 #endif

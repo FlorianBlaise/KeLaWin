@@ -19,7 +19,7 @@ int main()
   char action[100];                                                               
   char line_buffer[MAX_LINE_LENGTH];
 
-  Path path;
+  Path* path;
   Coord start, end;
   Map atlas;                                           
 
@@ -63,16 +63,20 @@ int main()
     start.x = myX;
     start.y = myY;
 
-    path = *generateFirstPath(&atlas, start, end);
-    fprintPath(&path,"out");
-    fprintf(stderr, "pos = %d-%d/ next = %d-%d",start.x, start.y, path.next->coord.x, path.next->coord.y);
+    if(round == 1 ) {
+      path = generateFirstPath(&atlas, start, end);
+    }
+    fprintPath(path,"out");
+    fprintf(stderr, "pos = %d-%d/ next = %d-%d",start.x, start.y, path->next->coord.x, path->next->coord.y);
 
-    accelerationX = (path.next->coord.x-start.x) - speedX;
-    accelerationY = (path.next->coord.y-start.y) - speedY;
+    accelerationX = (path->next->coord.x-start.x) - speedX;
+    accelerationY = (path->next->coord.y-start.y) - speedY;
                               
     gasLevel += gasConsumption(accelerationX, accelerationY, speedX, speedY, 0);  
     speedX += accelerationX;                                                      
     speedY += accelerationY;
+
+    path=path->next;
 
     /*------------fin de la partie à modifier-------------*/
 
